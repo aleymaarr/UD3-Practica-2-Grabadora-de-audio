@@ -11,6 +11,7 @@ import { useContext } from "react";
 import { LoginContext } from "../contexts/LoginContext";
 import LogoutScreen from "../screens/LogoutScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import AudioScreen from "../screens/AudioScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -70,6 +71,11 @@ const CustomDrawer = () => {
         name="Portfolio"
         component={PortfolioScreen}
         options={{ title: "Portfolio" }}
+      />
+      <Drawer.Screen
+        name="Audio"
+        component={AudioScreen}
+        options={{ title: "Audio" }}
       />
       <Drawer.Screen
         name="Sign off"
