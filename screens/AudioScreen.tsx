@@ -38,8 +38,10 @@ const AudioScreen = () => {
     ));
   }
 
-  async function deleteRecording(index) {
-    const newRecordings = recordings.filter((_, i) => i !== index);
+  async function deleteRecording(uri) {
+    const newRecordings = recordings.filter(
+      (recording) => recording.uri !== uri
+    );
     await AsyncStorage.setItem(
       "savedRecordings",
       JSON.stringify(newRecordings)
@@ -107,7 +109,9 @@ const AudioScreen = () => {
         onPress={recording ? stopRecording : startRecording}
       />
       {recordings.map((recordingLine, index) => (
-        <View key={index}>
+        <View key={recordingLine.uri}>
+          {" "}
+          {/* Usa la URI como clave */}
           <Text>Recording {index + 1}</Text>
           <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
           <Button
