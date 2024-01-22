@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Alert, Button } from "react-native";
+import { StyleSheet, View, Text, Button } from "react-native";
 import appColors from "../assets/styles/appColors";
 import { Audio } from "expo-av";
 
@@ -11,27 +11,26 @@ const AudioScreen = () => {
   async function startRecording() {
     try {
       const permission = await Audio.requestPermissionsAsync();
-
       if (permission.status === "granted") {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
 
-        const recordingOptions = {};
-
-        const newRecording = await Audio.Recording
-          .createAsync
-          //recordingOptions
-          ();
-        setRecording(newRecording);
+        console.log("Starting recording..");
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        setRecording(recording);
+        console.log("Recording started");
       } else {
-        setMessage("Se requiere permiso para acceder al micrófono");
+        setMessage("Permission required to access microphone");
       }
     } catch (err) {
       console.error("Failed to start recording", err);
     }
   }
+
   async function stopRecording() {
     if (!recording) return;
 
@@ -41,20 +40,19 @@ const AudioScreen = () => {
       setRecording(null);
       setRecordings((prevRecordings) => [...prevRecordings, { uri }]);
     } catch (error) {
-      console.error("Error al detener la grabación: ", error);
+      console.error("Error stopping recording: ", error);
     }
   }
 
   return (
     <View style={styles.container}>
       <Button
-        title={recording ? "Detener Grabación" : "Iniciar Grabación"}
+        title={recording ? "Stop Recording" : "Start recording"}
         onPress={recording ? stopRecording : startRecording}
       />
       {recordings.map((recordingLine, index) => (
         <View key={index}>
-          <Text>Grabación {index + 1}</Text>
-          {/* Implementa lógica para reproducir la grabación */}
+          <Text>Recording {index + 1}</Text>
         </View>
       ))}
       {message && <Text>{message}</Text>}
