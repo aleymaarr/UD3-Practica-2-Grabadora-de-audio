@@ -30,7 +30,7 @@ const AudioScreen = () => {
         });
 
         console.log("Starting recording..");
-        const newRecording = await Audio.Recording.createAsync(
+        const { recording: newRecording } = await Audio.Recording.createAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
         setRecording(newRecording);
