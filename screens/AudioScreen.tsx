@@ -11,60 +11,14 @@ const AudioScreen = () => {
 
   useEffect(() => {
     const loadRecordings = async () => {
-      try {
-        const savedRecordings = await AsyncStorage.getItem("savedRecordings");
-        if (savedRecordings !== null) {
-          setRecordings(JSON.parse(savedRecordings));
-        }
-      } catch (error) {
-        console.error("Error loading recordings:", error);
+      const savedRecordings = await AsyncStorage.getItem("savedRecordings");
+      if (savedRecordings) {
+        setRecordings(JSON.parse(savedRecordings));
       }
     };
 
     loadRecordings();
   }, []);
-
-  async function playSound(uri) {
-    const { sound } = await Audio.Sound.createAsync({ uri });
-    await sound.playAsync();
-  }
-
-  {
-    recordings.map((recordingLine, index) => (
-      <View key={index}>
-        <Text>Recording {index + 1}</Text>
-        <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
-      </View>
-    ));
-  }
-
-  async function deleteRecording(uri) {
-    const newRecordings = recordings.filter(
-      (recording) => recording.uri !== uri
-    );
-    await AsyncStorage.setItem(
-      "savedRecordings",
-      JSON.stringify(newRecordings)
-    );
-    setRecordings(newRecordings);
-  }
-
-  {
-    recordings.map((recordingLine, index) => (
-      <View key={index}>
-        <Text>Recording {index + 1}</Text>
-        <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
-        <Button title="Delete" onPress={() => deleteRecording(index)} />
-      </View>
-    ));
-  }
-
-  async function deleteAllRecordings() {
-    await AsyncStorage.removeItem("savedRecordings");
-    setRecordings([]);
-  }
-
-  <Button title="Delete All" onPress={deleteAllRecordings} />;
 
   async function startRecording() {
     try {
@@ -76,10 +30,10 @@ const AudioScreen = () => {
         });
 
         console.log("Starting recording..");
-        const { recording } = await Audio.Recording.createAsync(
+        const newRecording = await Audio.Recording.createAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
-        setRecording(recording);
+        setRecording(newRecording);
         console.log("Recording started");
       } else {
         setMessage("Permission required to access microphone");
@@ -96,22 +50,46 @@ const AudioScreen = () => {
       await recording.stopAndUnloadAsync();
       const uri = recording.getURI();
       setRecording(null);
-      setRecordings((prevRecordings) => [...prevRecordings, { uri }]);
+      const newRecordings = [...recordings, { uri }];
+      setRecordings(newRecordings);
+      await AsyncStorage.setItem(
+        "savedRecordings",
+        JSON.stringify(newRecordings)
+      );
     } catch (error) {
       console.error("Error stopping recording: ", error);
     }
   }
 
+  async function playSound(uri) {
+    const { sound } = await Audio.Sound.createAsync({ uri });
+    await sound.playAsync();
+  }
+
+  async function deleteRecording(uri) {
+    const newRecordings = recordings.filter(
+      (recordingItem) => recordingItem.uri !== uri
+    );
+    await AsyncStorage.setItem(
+      "savedRecordings",
+      JSON.stringify(newRecordings)
+    );
+    setRecordings(newRecordings);
+  }
+
+  async function deleteAllRecordings() {
+    await AsyncStorage.removeItem("savedRecordings");
+    setRecordings([]);
+  }
+
   return (
     <View style={styles.container}>
       <Button
-        title={recording ? "Stop Recording" : "Start recording"}
+        title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
       {recordings.map((recordingLine, index) => (
         <View key={recordingLine.uri}>
-          {" "}
-          {/* Usa la URI como clave */}
           <Text>Recording {index + 1}</Text>
           <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
           <Button
