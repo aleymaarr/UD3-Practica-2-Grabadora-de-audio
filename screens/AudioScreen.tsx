@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text, Button, FlatList } from "react-native";
 import appColors from "../assets/styles/appColors";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -67,9 +67,7 @@ const AudioScreen = () => {
   }
 
   async function deleteRecording(uri) {
-    const newRecordings = recordings.filter(
-      (recordingItem) => recordingItem.uri !== uri
-    );
+    const newRecordings = recordings.filter((item) => item.uri !== uri);
     await AsyncStorage.setItem(
       "savedRecordings",
       JSON.stringify(newRecordings)
@@ -105,18 +103,30 @@ const AudioScreen = () => {
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
-      {recordings.map((recordingLine, index) => (
-        <View key={recordingLine.uri}>
-          <Text>Recording {index + 1}</Text>
-          <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
-          <Button
-            title="Delete"
-            onPress={() => deleteRecording(recordingLine.uri)}
-          />
-        </View>
-      ))}
-      <Button title="Delete All" onPress={deleteAllRecordings} />
 
+      <FlatList
+        data={recordings}
+        keyExtractor={(item) => item.uri}
+        renderItem={({ item, index }) => (
+          <View style={styles.recordingItem}>
+            <Text>Recording {index + 1}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Button
+                title="Play"
+                onPress={() => playSound(item.uri)}
+                color="#007bff"
+              />
+              <Button
+                title="Delete"
+                onPress={() => deleteRecording(item.uri)}
+                color="#dc3545"
+              />
+            </View>
+          </View>
+        )}
+      />
+
+      <Button title="Delete All" onPress={deleteAllRecordings} />
       {message && <Text>{message}</Text>}
     </View>
   );
@@ -124,9 +134,11 @@ const AudioScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 50,
+    padding: 20,
   },
   label: {
     alignSelf: "flex-start",
@@ -163,6 +175,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: appColors.secondary,
     alignSelf: "center",
+  },
+  recordingItem: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 15,
   },
 });
 
