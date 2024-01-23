@@ -98,12 +98,11 @@ const AudioScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.startButtonContainer}>
       <Button
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
-
       <FlatList
         data={recordings}
         keyExtractor={(item) => item.uri}
@@ -186,6 +185,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 15,
+  },
+  startButtonContainer: {
+    marginBottom: 20,
+    alignSelf: "center",
+    width: "80%",
+  },
+  recordingList: {
+    marginTop: 30,
   },
 });
 
