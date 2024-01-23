@@ -77,9 +77,26 @@ const AudioScreen = () => {
     setRecordings(newRecordings);
   }
 
+  {
+    recordings.map((recordingLine, index) => (
+      <View key={recordingLine.uri}>
+        <Text>Recording {index + 1}</Text>
+        <Button title="Play" onPress={() => playSound(recordingLine.uri)} />
+        <Button
+          title="Delete"
+          onPress={() => deleteRecording(recordingLine.uri)}
+        />
+      </View>
+    ));
+  }
+
   async function deleteAllRecordings() {
-    await AsyncStorage.removeItem("savedRecordings");
-    setRecordings([]);
+    try {
+      await AsyncStorage.removeItem("savedRecordings");
+      setRecordings([]);
+    } catch (error) {
+      console.error("Error deleting all recordings:", error);
+    }
   }
 
   return (
@@ -99,6 +116,7 @@ const AudioScreen = () => {
         </View>
       ))}
       <Button title="Delete All" onPress={deleteAllRecordings} />
+
       {message && <Text>{message}</Text>}
     </View>
   );
