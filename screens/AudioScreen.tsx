@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Button, FlatList } from "react-native";
 import appColors from "../assets/styles/appColors";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator } from "react-native";
+import { Video, ResizeMode } from "expo-av";
 
 const AudioScreen = () => {
   const [recording, setRecording] = useState(null);
@@ -103,7 +103,18 @@ const AudioScreen = () => {
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
-      {recording && <ActivityIndicator size="large" color="#0000ff" />}
+      {recording && (
+        <Video
+          source={require("./assets/styles/animacion.mp4")}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+          resizeMode={ResizeMode.CONTAIN}
+          shouldPlay
+          isLooping
+          style={styles.videoStyle}
+        />
+      )}
       <FlatList
         data={recordings}
         keyExtractor={(item) => item.uri}
@@ -133,6 +144,10 @@ const AudioScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  gifStyle: {
+    width: 100,
+    height: 100,
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -195,6 +210,12 @@ const styles = StyleSheet.create({
   },
   recordingList: {
     marginTop: 30,
+  },
+  videoStyle: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginTop: 20,
   },
 });
 
