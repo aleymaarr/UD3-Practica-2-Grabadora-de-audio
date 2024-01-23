@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Button, FlatList } from "react-native";
 import appColors from "../assets/styles/appColors";
 import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator } from "react-native";
 
 const AudioScreen = () => {
   const [recording, setRecording] = useState(null);
@@ -102,6 +103,7 @@ const AudioScreen = () => {
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
+      {recording && <ActivityIndicator size="large" color="#0000ff" />}
       <FlatList
         data={recordings}
         keyExtractor={(item) => item.uri}
