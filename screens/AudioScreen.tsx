@@ -16,7 +16,6 @@ const AudioScreen = () => {
         setRecordings(JSON.parse(savedRecordings));
       }
     };
-
     loadRecordings();
   }, []);
 
@@ -187,6 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   startButtonContainer: {
+    marginTop: 20,
     marginBottom: 20,
     alignSelf: "center",
     width: "80%",
