@@ -21,20 +21,17 @@ const RegisterScreen = () => {
     }
 
     try {
-      const response = await fetch(
-        "http://172.16.102.238:8888/users/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name.trim(),
-            email: email.trim(),
-            password: password.trim(),
-          }),
-        }
-      );
+      const response = await fetch("http://192.168.1.132:8888/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          password: password.trim(),
+        }),
+      });
 
       if (response.status === 201) {
         const data = await response.json();
