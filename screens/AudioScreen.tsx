@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Button, FlatList } from "react-native";
 import appColors from "../assets/styles/appColors";
-import { Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Video, ResizeMode } from "expo-av";
+import { Video, ResizeMode, Audio } from "expo-av";
 
 const AudioScreen = () => {
   const [recording, setRecording] = useState(null);
@@ -105,7 +104,7 @@ const AudioScreen = () => {
       />
       {recording && (
         <Video
-          source={require("./assets/styles/animacion.mp4")}
+          source={require("../assets/styles/animacion.mp4")}
           rate={1.0}
           volume={1.0}
           isMuted={false}
